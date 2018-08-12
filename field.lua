@@ -44,7 +44,7 @@ function field.getAllowedDirections(f, x, y)
     return {
         left = tilePos.x > 0,
         right = tilePos.x < variables.fieldSize.x,
-        up = tilePos.y > 0,
+        up = tilePos.y > 1,
         down = tilePos.y < variables.fieldSize.y + 1,
     }
 end
@@ -67,7 +67,7 @@ function field.draw(f)
     for i = 1, variables.fieldSize.x do
         for j = 1, variables.fieldSize.y do
             local pos = field.getCellPos(f, i, j);
-            if (f.objects[i][j]) then f.objects[i][j].draw(pos.x, pos.y) end
+            if (f.objects[i][j]) then f.objects[i][j].draw(f.objects[i][j], f.light[i][j], pos.x, pos.y) end
             drawLight(pos.x, pos.y, f.light[i][j]);
         end
     end
