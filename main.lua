@@ -1,6 +1,7 @@
 local variables = require "variables";
 local player = require "player";
 local field = require "field";
+local health = require "health";
 
 math.randomseed(os.clock())
 
@@ -16,6 +17,7 @@ local p1 = {
     dx = 0,
     dy = 0,
     hp = 100,
+    time = 0,
     key = {
         left = "a",
         right = "d",
@@ -32,6 +34,7 @@ local p2 = {
     dx = 0,
     dy = 0,
     hp = 100,
+    time = 0,
     key = {
         left = "j",
         right = "l",
@@ -53,6 +56,7 @@ function love.update(dt)
         local f = fields[i];
         player.move(f, p, dt);
         field.playerInteract(f, p);
+        health.damage(p, f)
     end
 end
 
@@ -67,6 +71,7 @@ function love.draw()
         love.graphics.setColor(255,255,255)
         local tilePos = field.getCellTilePos(f, p.x, p.y);
         love.graphics.print("(" .. tilePos.x .. " ; " .. tilePos.y .. ")", p.x + 20, p.y + 20)
+        love.graphics.print(p.hp, p.x, p.y)
     end
 end
 

@@ -52,8 +52,8 @@ end
 local COLOR = {255, 255, 0}
 local COLOR_ALPHA = {
     [ field.CELL_DANGEROUS] = 0.8,
-    [CELL_VISIBLE] = 0.6,
-    [CELL_DARK] = 0.3
+    [field.CELL_VISIBLE] = 0.6,
+    [field.CELL_DARK] = 0.3
 }
 
 local function drawLight(x, y, lightness)

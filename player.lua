@@ -3,6 +3,7 @@ local field = require("field");
 
 local player = {};
 function player.move(f, p, dt)
+    if p.hp == 0 then return end
     local allowedDirections = field.getAllowedDirections(f, p.x, p.y);
     local dx = 0; local dy = 0;
     if (allowedDirections.left and love.keyboard.isDown(p.key.left)) then
