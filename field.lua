@@ -96,6 +96,7 @@ end
 function field.playerInteract(f, p)
     local tilePos = getCellTilePos(f, p.x, p.y);
     local obj = f.objects[tilePos.x][tilePos.y];
+    if (tilePos.x < variables.fieldSize.x and not obj) then obj = f.objects[tilePos.x + 1][tilePos.y] end
     if (obj and not obj.on) then
         obj.on = true;
         local pos = field.randomCell();
