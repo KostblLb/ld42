@@ -17,8 +17,8 @@ function player.move(f, p, dt)
     if (allowedDirections.down and love.keyboard.isDown(p.key.down)) then
         dy = dt;
     end
-    p.x = p.x + (dx * variables.speed);
-    p.y = p.y + (dy * variables.speed);
+    p.x = math.max(f.offset.x, p.x + (dx * variables.speed));
+    p.y = math.max(f.offset.y, p.y + (dy * variables.speed));
 end
 
 PLAYER_WIDTH = variables.tileSize;
