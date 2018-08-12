@@ -62,6 +62,9 @@ function love.draw()
         field.draw(f);
         local p = players[i];
         player.draw(p);
+        love.graphics.setColor(255,255,255)
+        local tilePos = field.getCellTilePos(f, p.x, p.y);
+        love.graphics.print("(" .. tilePos.x .. " ; " .. tilePos.y .. ")", p.x + 20, p.y + 20)
     end
 end
 

@@ -37,6 +37,7 @@ local function getCellTilePos(f, x, y)
         y = math.floor((math.floor(y) - f.offset.y) / variables.tileSize) + 1
     };
 end
+field.getCellTilePos = getCellTilePos;
 
 function field.getAllowedDirections(f, x, y)
     local tilePos = getCellTilePos(f, x, y);
