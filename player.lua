@@ -28,8 +28,11 @@ PLAYER_HEIGHT = variables.tileSize * 2;
 function player.draw(p)
    -- love.graphics.setColor(255,255,255)
    -- love.graphics.rectangle("fill", p.x, p.y - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT);
+   if p.hp == 0 
+   then love.graphics.draw(p.dead, p.x, p.y - PLAYER_HEIGHT, 0, 0.5)
+   else
     love.graphics.draw(p.image, p.x, p.y - PLAYER_HEIGHT, 0, 1.25)
-    
+    end
 end
 
 return player ;

@@ -2,6 +2,7 @@ local variables = require "variables";
 local player = require "player";
 local field = require "field";
 local health = require "health";
+local screen = require "screen"
 
 math.randomseed(os.clock())
 
@@ -19,6 +20,7 @@ local p1 = {
     hp = 50,
     time = 0,
     image = love.graphics.newImage("vampire.png"),
+    dead = love.graphics.newImage("dust.png"),
     key = {
         left = "a",
         right = "d",
@@ -37,6 +39,7 @@ local p2 = {
     hp = 50,
     time = 0,
     image = love.graphics.newImage("ghost.png"),
+    dead = love.graphics.newImage("dust.png"),
     key = {
         left = "j",
         right = "l",
@@ -76,6 +79,7 @@ function love.draw()
         love.graphics.print(p.hp, p.x, p.y)
         love.graphics.print({{2,8,45,255}, love.timer.getTime()}, 10, 10)
         player.draw(p);
+        screen.draw(p);
     end
 end
 
