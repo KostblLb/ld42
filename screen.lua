@@ -11,9 +11,15 @@ function screen.timescreen(wins, i, gameover, winner)
     love.graphics.setFont(variables.smallFont);
 end
 
+
 function screen.draw(p)
-     love.graphics.setColor(255,255,255)
-    -- love.graphics.rectangle("fill", p.hpbar, 45, 5, 15)
-     love.graphics.rectangle("fill", 100, 45, 5, 15)
+    local k = 0;
+    if p.hp ~= 0 then
+            for i = 1, p.hp/5 do
+              love.graphics.setColor(255,255,255)
+               love.graphics.rectangle("fill", p.hpbarx + k, p.hpbary, 5, 15)
+               k = k + 10
+             end
+    end
 end
 return screen

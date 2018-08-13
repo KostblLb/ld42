@@ -29,6 +29,8 @@ local function makePlayers()
         time = 0,
         image = love.graphics.newImage("vampire.png"),
         dead = love.graphics.newImage("dust.png"),
+        hpbarx = 95,
+        hpbary = 45,
         aura = {
             r = 1,
             g = 0,
@@ -53,6 +55,8 @@ local function makePlayers()
         time = 0,
         image = love.graphics.newImage("ghost.png"),
         dead = love.graphics.newImage("dust.png"),
+        hpbarx = 610,
+        hpbary = 550,
         aura = {
             r = 0.2,
             g = 0.1,
