@@ -6,7 +6,7 @@ local screen = require "screen"
 
 math.randomseed(os.clock())
 
-local fields = { field.generate(40, 60), field.generate(532, 20) };
+local fields = { field.generate(10, 600 - 10 - variables.fieldSize.y * variables.tileSize), field.generate(800 - 10 - variables.fieldSize.x * variables.tileSize, 10) };
 fields[1].friend = fields[2];
 fields[2].friend = fields[1];
 
@@ -21,6 +21,11 @@ local p1 = {
     time = 0,
     image = love.graphics.newImage("vampire.png"),
     dead = love.graphics.newImage("dust.png"),
+    aura = {
+        r = 1,
+        g = 0,
+        b = 0.1
+    },
     key = {
         left = "a",
         right = "d",
@@ -40,19 +45,24 @@ local p2 = {
     time = 0,
     image = love.graphics.newImage("ghost.png"),
     dead = love.graphics.newImage("dust.png"),
+    aura = {
+        r = 0.2,
+        g = 0.1,
+        b = 1
+    },
     key = {
-        left = "j",
-        right = "l",
-        up = "i",
-        down = "k"
+        left = "left",
+        right = "right",
+        up = "up",
+        down = "down"
     }
 };
 local players = {[1] = p1, [2] = p2};
 
 function love.load()
-    love.graphics.setNewFont(12)
+    love.graphics.setNewFont("FTY_IRONHORSE_NCV.ttf", 24)
     love.graphics.setColor(0,0,0)
-    love.graphics.setBackgroundColor(255,255,255)
+    love.graphics.setBackgroundColor(1,1,1)
 end
 
 function love.update(dt)
@@ -71,15 +81,14 @@ function love.draw()
     love.graphics.clear();
     for i = 1, 2 do
         local f = fields[i];
-        field.draw(f);
         local p = players[i];
+        field.draw(f, p);
         local tilePos = field.getCellTilePos(f, p.x, p.y);
         love.graphics.setColor(255,255,255)
-        love.graphics.print("(" .. tilePos.x .. " ; " .. tilePos.y .. ")", p.x + 20, p.y + 20)
-        love.graphics.print(p.hp, p.x, p.y)
-        love.graphics.print({{2,8,45,255}, love.timer.getTime()}, 10, 10)
         player.draw(p);
         screen.draw(p);
+        love.graphics.print("(" .. tilePos.x .. " ; " .. tilePos.y .. ")", p.x + 20, p.y + 20)
+        love.graphics.print(p.hp > 0 and p.hp or "DEAD", p.x, p.y)
     end
 end
 
