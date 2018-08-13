@@ -34,7 +34,8 @@ local function makePlayers()
         aura = {
             r = 1,
             g = 0,
-            b = 0.1
+            b = 0.1,
+            a = 0.3
         },
         key = {
             left = "a",
@@ -53,14 +54,15 @@ local function makePlayers()
         dy = 0,
         hp = 50,
         time = 0,
-        image = love.graphics.newImage("ghost.png"),
+        image = love.graphics.newImage("vampire3.png"),
         dead = love.graphics.newImage("dust.png"),
         hpbarx = 610,
         hpbary = 550,
         aura = {
             r = 0.2,
             g = 0.1,
-            b = 1
+            b = 1,
+            a = 0
         },
         key = {
             left = "left",
@@ -136,7 +138,7 @@ function love.draw()
         player.draw(p);
         screen.draw(p);
         -- love.graphics.print("(" .. tilePos.x .. " ; " .. tilePos.y .. ")", p.x + 20, p.y + 20)
-        love.graphics.print(p.hp > 0 and p.hp or "DEAD", p.x, p.y)
+        love.graphics.print(p.hp > 0 and p.hp or "DEAD", p.x, p.y + 10)
         screen.timescreen(wins[i], i, gameover, winner);
     end
 end

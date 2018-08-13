@@ -31,7 +31,7 @@ function player.draw(p)
     if p.hp == 0 then
         love.graphics.draw(p.dead, p.x, p.y - PLAYER_HEIGHT, 0, 0.5)
     else
-        love.graphics.setColor(p.aura.r, p.aura.g, p.aura.b, 0.3)
+        love.graphics.setColor(p.aura.r, p.aura.g, p.aura.b, p.aura.a)
         love.graphics.rectangle("fill", p.x - PLAYER_WIDTH / 2, p.y - PLAYER_HEIGHT * 0.75, PLAYER_WIDTH * 2, PLAYER_HEIGHT);
         love.graphics.setColor(1,1,1,1)
         love.graphics.draw(p.image, p.x, p.y - PLAYER_HEIGHT, 0, 1.25)
