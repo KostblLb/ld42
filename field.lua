@@ -56,8 +56,14 @@ local COLOR_ALPHA = {
     [field.CELL_DARK] = 0.3
 }
 
+local COLOR_DARK = {0.1, 0, 0.7, 0.3}
+local COLOR_VISIBLE = {1, 1, 0, 0.6}
+local COLOR_DANGEROUS = {1, 1, 0, 0.8}
 local function drawLight(x, y, lightness)
-    love.graphics.setColor(COLOR[1], COLOR[2], COLOR[3], COLOR_ALPHA[lightness]);
+    if (lightness == field.CELL_DARK) then love.graphics.setColor(COLOR_DARK[1], COLOR_DARK[2], COLOR_DARK[3], COLOR_DARK[4])
+    elseif (lightness == field.CELL_VISIBLE) then love.graphics.setColor(COLOR_VISIBLE);
+    else love.graphics.setColor(COLOR_DANGEROUS) end;
+    -- love.graphics.setColor(lightness > 0 and 1 or 0.1, lightness > 0 and 1 or 0, lightness , COLOR_ALPHA[lightness]);
     love.graphics.rectangle("fill", x, y, variables.tileSize, variables.tileSize);
 end
 
@@ -67,8 +73,8 @@ function field.draw(f)
     for i = 1, variables.fieldSize.x do
         for j = 1, variables.fieldSize.y do
             local pos = field.getCellPos(f, i, j);
-            if (f.objects[i][j]) then f.objects[i][j].draw(f.objects[i][j], f.light[i][j], pos.x, pos.y) end
             drawLight(pos.x, pos.y, f.light[i][j]);
+            if (f.objects[i][j]) then f.objects[i][j].draw(f.objects[i][j], f.light[i][j], pos.x, pos.y) end
         end
     end
 end
@@ -76,31 +82,68 @@ end
 local DANGER_ZONE_RADIUS = 1;
 local VISIBLE_ZONE_RADIUS = 3;
 function field.addLight(f, x, y)
-    f.light[x][y] =  field.CELL_DANGEROUS;
+    -- f.light[x][y] =  field.CELL_DANGEROUS;
     for i=math.max(1, x - VISIBLE_ZONE_RADIUS), math.min(variables.fieldSize.x, x + VISIBLE_ZONE_RADIUS) do
         for j = math.max(1, y - VISIBLE_ZONE_RADIUS), math.min(variables.fieldSize.y, y + VISIBLE_ZONE_RADIUS) do
-            if (f.light[i][j] == field.CELL_VISIBLE or f.light[i][j] ==  field.CELL_DANGEROUS) then
-                f.light[i][j] =  field.CELL_DANGEROUS;
-            else
-                f.light[i][j] = field.CELL_VISIBLE;
-            end
+            --if (f.light[i][j] == field.CELL_VISIBLE or f.light[i][j] ==  field.CELL_DANGEROUS) then
+                --f.light[i][j] =  field.CELL_DANGEROUS;
+                --f.light[i][j] =  field.CELL_DANGEROUS;
+            --else
+            --    f.light[i][j] = field.CELL_VISIBLE;
+            --end
+            f.light[i][j] = f.light[i][j] + 1;
         end
     end
     for i=math.max(1, x - DANGER_ZONE_RADIUS), math.min(variables.fieldSize.x, x + DANGER_ZONE_RADIUS) do
         for j = math.max(1, y - DANGER_ZONE_RADIUS), math.min(variables.fieldSize.y, y + DANGER_ZONE_RADIUS) do
-            f.light[i][j] =  field.CELL_DANGEROUS;
+            --f.light[i][j] =  field.CELL_DANGEROUS;
+            f.light[i][j] = f.light[i][j] + 1;
         end
     end
 end
 
-function field.playerInteract(f, p)
-    local tilePos = getCellTilePos(f, p.x, p.y);
+function field.removeLight(f, x, y)
+    -- f.light[x][y] =  field.CELL_DANGEROUS;
+    for i=math.max(1, x - VISIBLE_ZONE_RADIUS), math.min(variables.fieldSize.x, x + VISIBLE_ZONE_RADIUS) do
+        for j = math.max(1, y - VISIBLE_ZONE_RADIUS), math.min(variables.fieldSize.y, y + VISIBLE_ZONE_RADIUS) do
+            --if (f.light[i][j] == field.CELL_VISIBLE or f.light[i][j] ==  field.CELL_DANGEROUS) then
+                --f.light[i][j] =  field.CELL_DANGEROUS;
+                --f.light[i][j] =  field.CELL_DANGEROUS;
+            --else
+            --    f.light[i][j] = field.CELL_VISIBLE;
+            --end
+            f.light[i][j] = f.light[i][j] - 1;
+        end
+    end
+    for i=math.max(1, x - DANGER_ZONE_RADIUS), math.min(variables.fieldSize.x, x + DANGER_ZONE_RADIUS) do
+        for j = math.max(1, y - DANGER_ZONE_RADIUS), math.min(variables.fieldSize.y, y + DANGER_ZONE_RADIUS) do
+            --f.light[i][j] =  field.CELL_DANGEROUS;
+            f.light[i][j] = f.light[i][j] - 1;
+        end
+    end
+end
+
+function field.playerInteract(f, p, dt)
+    local tilePos = getCellTilePos(f, p.x + variables.tileSize / 2, p.y - variables.tileSize / 2);
     local obj = f.objects[tilePos.x][tilePos.y];
-    if (tilePos.x < variables.fieldSize.x and not obj) then obj = f.objects[tilePos.x + 1][tilePos.y] end
-    if (obj and not obj.on) then
+    -- if (tilePos.x < variables.fieldSize.x and not obj) then obj = f.objects[tilePos.x + 1][tilePos.y] end
+    if (obj) then
         obj.on = true;
-        local pos = field.randomCell();
-        field.addLight(f.friend, pos.x, pos.y);
+        obj.timer = obj.timer + dt;
+        local phase = math.floor(obj.timer);
+        local pos = {
+            x = (phase % 2 == 1) and (variables.fieldSize.x - tilePos.x + 1) or tilePos.x ,
+            y = ((phase % 4) > 1) and (variables.fieldSize.y - tilePos.y + 1) or tilePos.y
+        }
+        if (obj.light and obj.light.x == pos.x and obj.light.y == pos.y) then return
+        else
+            if obj.light then field.removeLight(f.friend, obj.light.x, obj.light.y); end
+            field.addLight(f.friend, pos.x, pos.y)
+            obj.light = {
+                x = pos.x,
+                y = pos.y
+            }
+        end
     end
 end
 

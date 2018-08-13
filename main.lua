@@ -16,7 +16,7 @@ local p1 = {
     y = p1Pos.y,
     dx = 0,
     dy = 0,
-    hp = 100,
+    hp = 50,
     time = 0,
     key = {
         left = "a",
@@ -33,7 +33,7 @@ local p2 = {
     y = p2Pos.y,
     dx = 0,
     dy = 0,
-    hp = 100,
+    hp = 50,
     time = 0,
     key = {
         left = "j",
@@ -55,8 +55,9 @@ function love.update(dt)
         local p = players[i];
         local f = fields[i];
         player.move(f, p, dt);
-        field.playerInteract(f, p);
+        field.playerInteract(f, p, dt);
         health.damage(p, f)
+        _dt = dt;
     end
 end
 
