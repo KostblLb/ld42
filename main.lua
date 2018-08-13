@@ -18,6 +18,7 @@ local p1 = {
     dy = 0,
     hp = 50,
     time = 0,
+    image = love.graphics.newImage("vampire.png"),
     key = {
         left = "a",
         right = "d",
@@ -35,6 +36,7 @@ local p2 = {
     dy = 0,
     hp = 50,
     time = 0,
+    image = love.graphics.newImage("ghost.png"),
     key = {
         left = "j",
         right = "l",
@@ -68,11 +70,12 @@ function love.draw()
         local f = fields[i];
         field.draw(f);
         local p = players[i];
-        player.draw(p);
-        love.graphics.setColor(255,255,255)
         local tilePos = field.getCellTilePos(f, p.x, p.y);
+        love.graphics.setColor(255,255,255)
         love.graphics.print("(" .. tilePos.x .. " ; " .. tilePos.y .. ")", p.x + 20, p.y + 20)
         love.graphics.print(p.hp, p.x, p.y)
+        love.graphics.print({{2,8,45,255}, love.timer.getTime()}, 10, 10)
+        player.draw(p);
     end
 end
 

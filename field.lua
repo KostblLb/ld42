@@ -7,6 +7,21 @@ field.CELL_DANGEROUS = 2;
 field.CELL_VISIBLE = 1;
 field.CELL_DARK = 0;
 
+local function getCellTilePos(f, x, y)
+    return {
+        x = math.floor((math.floor(x) - f.offset.x) / variables.tileSize) + 1,
+        y = math.floor((math.floor(y) - f.offset.y) / variables.tileSize) + 1
+    };
+end
+field.getCellTilePos = getCellTilePos;
+
+function field.getCellPos(f, x, y)
+    return {
+        x = f.offset.x + (x - 1) * variables.tileSize,
+        y = f.offset.y + (y - 1) * variables.tileSize,
+    }
+end
+
 function field.generate(x, y)
     local result = { objects = {}, light = {}, offset = {x = x, y = y}, friend = nil };
     for i = 1, variables.fieldSize.x do
@@ -24,20 +39,7 @@ function field.generate(x, y)
     return result;
 end
 
-function field.getCellPos(f, x, y)
-    return {
-        x = f.offset.x + (x - 1) * variables.tileSize,
-        y = f.offset.y + (y - 1) * variables.tileSize,
-    }
-end
 
-local function getCellTilePos(f, x, y)
-    return {
-        x = math.floor((math.floor(x) - f.offset.x) / variables.tileSize) + 1,
-        y = math.floor((math.floor(y) - f.offset.y) / variables.tileSize) + 1
-    };
-end
-field.getCellTilePos = getCellTilePos;
 
 function field.getAllowedDirections(f, x, y)
     local tilePos = getCellTilePos(f, x, y);
