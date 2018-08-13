@@ -22,16 +22,6 @@ function field.getCellPos(f, x, y)
     }
 end
 
-function field.playerInteract(f, p)
-    local tilePos = getCellTilePos(f, p.x, p.y);
-    local obj = f.objects[tilePos.x][tilePos.y];
-    if (obj and not obj.on) then
-        obj.on = true;
-        local pos = field.randomCell();
-        field.addLight(f.friend, pos.x, pos.y);
-    end
-end
-
 function field.generate(x, y)
     local result = { objects = {}, light = {}, offset = {x = x, y = y}, friend = nil };
     for i = 1, variables.fieldSize.x do
@@ -105,6 +95,16 @@ function field.addLight(f, x, y)
     end
 end
 
+function field.playerInteract(f, p)
+    local tilePos = getCellTilePos(f, p.x, p.y);
+    local obj = f.objects[tilePos.x][tilePos.y];
+    if (tilePos.x < variables.fieldSize.x and not obj) then obj = f.objects[tilePos.x + 1][tilePos.y] end
+    if (obj and not obj.on) then
+        obj.on = true;
+        local pos = field.randomCell();
+        field.addLight(f.friend, pos.x, pos.y);
+    end
+end
 
 function field.randomCell()
     return {
