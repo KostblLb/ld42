@@ -1,7 +1,14 @@
+local variables = require("variables")
 local screen = {}
 
-function timescreen(x, y)
-    love.graphics.print({3, love.timer.getTime}, 10, 10)
+function screen.timescreen(wins, i, gameover, winner)
+    love.graphics.setFont(variables.bigFont);
+    love.graphics.setColor(1,1,1);
+    love.graphics.print("P".. i .. " WINS: " .. wins, 300, 10 + 530 * (i - 1));
+    if (gameover) then
+        love.graphics.print({{1, 1, 1}, "WINNER:\n", {1, 0.3, 0.3}, winner and ("P" .. winner) or "NOBODY"}, 300, 300)
+    end
+    love.graphics.setFont(variables.smallFont);
 end
 
 function screen.draw(p)
