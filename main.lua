@@ -84,6 +84,12 @@ function love.load()
     love.graphics.setBackgroundColor(1,1,1)
     makeFields()
     makePlayers()
+
+    love.audio.play(love.audio.newSource("bell.mp3", "stream"))
+    SOUND_BURN = love.audio.newSource("burning.mp3", "stream")
+    love.audio.play(SOUND_BURN);
+    love.audio.pause(SOUND_BURN);
+    SOUND_DEATH = love.audio.newSource("death.mp3", "stream")
 end
 
 function love.update(dt)
@@ -94,19 +100,26 @@ function love.update(dt)
         return
     end
     if (not gameover) then
+        local burns = false
         for i = 1, 2 do
             local p = players[i];
             local f = fields[i];
             player.move(f, p, dt);
             field.playerInteract(f, p, dt);
             health.damage(p, f)
+            local playerPos = field.getCellTilePos(f, math.min(p.x + variables.tileSize / 2, variables.fieldSize.x * variables.tileSize + f.offset.x), math.max(p.y - variables.tileSize / 2, f.offset.y))
+            burns = burns or f.light[playerPos.x][playerPos.y] >= field.CELL_DANGEROUS
         end
+        if (burns) then love.audio.play(SOUND_BURN)
+        else love.audio.pause(SOUND_BURN) end
+
         if (players[1].hp <= 0 or players[2].hp <= 0) then
             gameover = true
             if (players[1].hp > 0) then wins[1] = wins[1] + 1; winner = 1;
             elseif (players[2].hp > 0) then wins[2] = wins[2] + 1; winner = 2;
             else winner = nil;
             end
+            love.audio.play(SOUND_DEATH)
         end
     end
 end
@@ -122,7 +135,7 @@ function love.draw()
         love.graphics.setColor(255,255,255)
         player.draw(p);
         screen.draw(p);
-        love.graphics.print("(" .. tilePos.x .. " ; " .. tilePos.y .. ")", p.x + 20, p.y + 20)
+        -- love.graphics.print("(" .. tilePos.x .. " ; " .. tilePos.y .. ")", p.x + 20, p.y + 20)
         love.graphics.print(p.hp > 0 and p.hp or "DEAD", p.x, p.y)
         screen.timescreen(wins[i], i, gameover, winner);
     end
