@@ -22,14 +22,14 @@ function player.move(f, p, dt)
     p.y = math.max(f.offset.y, p.y + (dy * variables.speed));
 end
 
-PLAYER_WIDTH = variables.tileSize;
-PLAYER_HEIGHT = variables.tileSize * 2;
+local PLAYER_WIDTH = variables.tileSize;
+local PLAYER_HEIGHT = variables.tileSize * 2;
 
 function player.draw(p)
-   -- love.graphics.setColor(255,255,255)
-   -- love.graphics.rectangle("fill", p.x, p.y - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT);
+    love.graphics.setColor(p.aura.r, p.aura.g, p.aura.b, 0.3)
+    love.graphics.rectangle("fill", p.x - PLAYER_WIDTH / 2, p.y - PLAYER_HEIGHT * 0.75, PLAYER_WIDTH * 2, PLAYER_HEIGHT);
+    love.graphics.setColor(1,1,1,1)
     love.graphics.draw(p.image, p.x, p.y - PLAYER_HEIGHT, 0, 1.25)
-    
 end
 
 return player ;

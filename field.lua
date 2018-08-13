@@ -58,7 +58,7 @@ local COLOR_ALPHA = {
     [field.CELL_DARK] = 0.3
 }
 
-local COLOR_DARK = {0.1, 0, 0.7, 0.3}
+local COLOR_DARK = {0.1, 0, 0.7, 0.2}
 local COLOR_VISIBLE = {1, 1, 0, 0.6}
 local COLOR_DANGEROUS = {1, 1, 0, 0.8}
 local function drawLight(x, y, lightness)
@@ -69,14 +69,16 @@ local function drawLight(x, y, lightness)
     love.graphics.rectangle("fill", x, y, variables.tileSize, variables.tileSize);
 end
 
-function field.draw(f)
+function field.draw(f, p)
     love.graphics.setColor(255,255,255);
     love.graphics.rectangle("line", f.offset.x, f.offset.y, variables.tileSize * variables.fieldSize.x, variables.tileSize * variables.fieldSize.y);
     for i = 1, variables.fieldSize.x do
         for j = 1, variables.fieldSize.y do
             local pos = field.getCellPos(f, i, j);
+            local playerTilePos = field.getCellTilePos(f, p.x + variables.tileSize / 2, p.y - variables.tileSize / 2);
+            local nearPlayer = math.abs(playerTilePos.x - i) <= 1 and math.abs(playerTilePos.y - j) <= 1
             drawLight(pos.x, pos.y, f.light[i][j]);
-            if (f.objects[i][j]) then f.objects[i][j].draw(f.objects[i][j], f.light[i][j], pos.x, pos.y) end
+            if (f.objects[i][j]) then f.objects[i][j].draw(f.objects[i][j], f.light[i][j], pos.x, pos.y, nearPlayer) end
         end
     end
 end
