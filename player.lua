@@ -1,25 +1,31 @@
 local variables = require("variables");
 local field = require("field");
-
 local player = {};
-function player.move(f, p, dt)
-    if p.hp == 0 then return end
+
+function player.getDirection(keyConfig)
+    return ((love.keyboard.isDown(keyConfig.up) and "n") or (love.keyboard.isDown(keyConfig.down) and "s") or "") ..
+    ((love.keyboard.isDown(keyConfig.left) and "w") or (love.keyboard.isDown(keyConfig.right) and "e") or "")
+end
+
+function player.move(f, p, dir, dt)
+    if p.hp == 0 then return p.x, p.y end
     local allowedDirections = field.getAllowedDirections(f, p.x, p.y);
     local dx = 0; local dy = 0;
-    if (allowedDirections.left and love.keyboard.isDown(p.key.left)) then
+    if (allowedDirections.left and dir:find("w")) then
         dx = -dt;
     end
-    if (allowedDirections.up and love.keyboard.isDown(p.key.up)) then
+    if (allowedDirections.up and dir:find("n")) then
         dy = -dt;
     end
-    if (allowedDirections.right and love.keyboard.isDown(p.key.right)) then
+    if (allowedDirections.right and dir:find("e")) then
         dx = dt;
     end
-    if (allowedDirections.down and love.keyboard.isDown(p.key.down)) then
+    if (allowedDirections.down and dir:find("s")) then
         dy = dt;
     end
-    p.x = math.max(f.offset.x, p.x + (dx * variables.speed));
-    p.y = math.max(f.offset.y, p.y + (dy * variables.speed));
+    p.x = math.max(f.offset.x, p.x + (dx * variables.speed * variables.tileSize));
+    p.y = math.max(f.offset.y, p.y + (dy * variables.speed * variables.tileSize));
+    return p.x, p.y, dx ~= 0 or dy ~= 0
 end
 
 local PLAYER_WIDTH = variables.tileSize;

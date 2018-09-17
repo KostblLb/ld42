@@ -7,10 +7,14 @@ field.CELL_DANGEROUS = 2;
 field.CELL_VISIBLE = 1;
 field.CELL_DARK = 0;
 
+local function clamp(val, min, max)
+    return math.min(math.max(min, val), max)
+end
+
 local function getCellTilePos(f, x, y)
     return {
-        x = math.floor((math.floor(x) - f.offset.x) / variables.tileSize) + 1,
-        y = math.floor((math.floor(y) - f.offset.y) / variables.tileSize) + 1
+        x = clamp(math.floor((math.floor(x) - f.offset.x) / variables.tileSize) + 1, 1, variables.fieldSize.x),
+        y = clamp(math.floor((math.floor(y) - f.offset.y) / variables.tileSize) + 1, 1, variables.fieldSize.y),
     };
 end
 field.getCellTilePos = getCellTilePos;
@@ -19,6 +23,21 @@ function field.getCellPos(f, x, y)
     return {
         x = f.offset.x + (x - 1) * variables.tileSize,
         y = f.offset.y + (y - 1) * variables.tileSize,
+    }
+end
+
+-- returns position relative to field width / height from 0 to 1
+function field.getRelativePos(f, x, y)
+    return {
+        x = (x - f.offset.x) / (variables.fieldSize.x * variables.tileSize),
+        y = (y - f.offset.y) / (variables.fieldSize.y * variables.tileSize)
+    }
+end
+
+function field.getAbsolutePos(f, x, y)
+    return {
+        x = x * (variables.fieldSize.x * variables.tileSize) + f.offset.x,
+        y = y * (variables.fieldSize.y * variables.tileSize) + f.offset.y
     }
 end
 
@@ -42,12 +61,13 @@ end
 
 
 function field.getAllowedDirections(f, x, y)
-    local tilePos = getCellTilePos(f, x, y);
+    local tilePosUpper = getCellTilePos(f, x, y - variables.tileSize);
+    local tilePosLower = getCellTilePos(f, x, y);
     return {
-        left = tilePos.x > 0,
-        right = tilePos.x < variables.fieldSize.x,
-        up = tilePos.y > 1,
-        down = tilePos.y < variables.fieldSize.y + 1,
+        left = tilePosLower.x > 0,
+        right = tilePosLower.x < variables.fieldSize.x,
+        up = tilePosLower.y > 1,
+        down = tilePosUpper.y < variables.fieldSize.y,
     }
 end
 
