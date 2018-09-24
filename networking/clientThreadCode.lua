@@ -1,7 +1,7 @@
 local enet = require "enet"
 local config = require "networking.config"
 local host = enet.host_create()
-local peer = host:connect(config.host)
+local peer = host:connect(config.remoteHost)
 local player = require "player"
 local variables = require "variables"
 local binser = require "binser"
